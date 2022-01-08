@@ -14,7 +14,7 @@ public class PaymentMessage {
     @JsonProperty("payment_id")
     private String paymentId;
     @JsonProperty("account_id")
-    private String accountId;
+    private Integer accountId;
     @JsonProperty("payment_type")
     private String paymentType;
     @JsonProperty("credit_card")

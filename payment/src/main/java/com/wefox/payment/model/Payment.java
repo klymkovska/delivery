@@ -22,7 +22,7 @@ public class Payment {
     private String paymentId;
 
     @Column(name = "account_id")
-    private Integer accountId;
+    private Long accountId;
 
     @Column(name = "payment_type")
     @NotNull(message = "Payment type must not be null")

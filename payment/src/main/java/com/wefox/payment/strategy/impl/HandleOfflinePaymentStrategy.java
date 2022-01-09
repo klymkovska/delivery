@@ -3,6 +3,7 @@ package com.wefox.payment.strategy.impl;
 import com.wefox.payment.converter.impl.PaymentConverter;
 import com.wefox.payment.dto.PaymentMessage;
 import com.wefox.payment.model.Payment;
+import com.wefox.payment.repository.AccountRepository;
 import com.wefox.payment.repository.PaymentRepository;
 import com.wefox.payment.strategy.IHandlePaymentStrategy;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,8 @@ public class HandleOfflinePaymentStrategy implements IHandlePaymentStrategy {
     @Autowired
     private PaymentRepository paymentRepository;
     @Autowired
+    private AccountRepository accountRepository;
+    @Autowired
     private PaymentConverter paymentConverter;
 
     @Override
@@ -24,6 +27,7 @@ public class HandleOfflinePaymentStrategy implements IHandlePaymentStrategy {
         Payment paymentModel = paymentConverter.convert(message);
         try {
             paymentRepository.save(paymentModel);
+            accountRepository.updateLastPaymentDate(paymentModel.getCreatedOn(), paymentModel.getAccountId());
         } catch (HibernateException  e) {
             log.error("Error occurred while persisting a payment");
         }

@@ -2,7 +2,6 @@ package com.wefox.payment.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +13,7 @@ public class PaymentMessage {
     @JsonProperty("payment_id")
     private String paymentId;
     @JsonProperty("account_id")
-    private Integer accountId;
+    private Long accountId;
     @JsonProperty("payment_type")
     private String paymentType;
     @JsonProperty("credit_card")

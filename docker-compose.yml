@@ -25,8 +25,8 @@ services:
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper-server:2181
       - ALLOW_PLAINTEXT_LISTENER=yes
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,PLAINTEXT_HOST://:29092
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-server:9092,PLAINTEXT_HOST://localhost:29092
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092, PLAINTEXT_HOST://kafka-server:29092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092, PLAINTEXT_HOST://kafka-server:29092
     depends_on:
       - zookeeper-server
 
@@ -68,3 +68,25 @@ services:
     depends_on:
       - postgress
       - kafka-server
+
+  payment:
+    image: payment
+    build: ./payment
+    ports:
+        - "8081:8081"
+    environment:
+      - KAFKA_HOST=kafka-server:29092
+      - CONSUMER_GROUP=payment-consumer
+      - OFFLINE_TOPIC=offline
+      - ONLINE_TOPIC=online
+      - POSTGRES_URL=jdbc:postgresql://postgress:5432/payments
+      - PAYMENT_VALIDATION_ENDPOINT=http://api-producer:8080/payment
+      - PAYMENT_ERROR_LOG_ENDPOINT=http://api-producer:8080/log
+    networks:
+      - kafka-net
+    volumes:
+        - ./payment:/app
+    depends_on:
+      - postgress
+      - kafka-server
+      - api-producer
